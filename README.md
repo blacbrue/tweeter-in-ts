@@ -7,6 +7,8 @@ Compile `index.ts`
 
 The `tsconfig.json` is already there so you just need to create a `dist` folder then run `tsc`
 
+Then run `node .` to run. Make sure the compiled `index.js` is in a folder with the name: `dist`
+
 Also install dependencies: `npm i` and `npm i -g typescript` (to compile `index.ts`)
 
 Also create a `.env` file copy paste this:
