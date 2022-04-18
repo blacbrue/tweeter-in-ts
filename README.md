@@ -23,3 +23,5 @@ ACCESS_TOKEN = "<YOUR ACCESS TOKEN HERE>"
 Replace `<YOUR API KEY HERE>` and etc with your actual API keys.
 
 Tutorial on how to get API Keys: https://developer.twitter.com/en/docs/twitter-api/getting-started/getting-access-to-the-twitter-api or just google it
+
+Or if you don't know how to do anything mentioned above then hmu on Twitter: https://twitter.com/blacbrue
