@@ -2,3 +2,4 @@
 start.bat
 /node_modules
 /dist
+/logs

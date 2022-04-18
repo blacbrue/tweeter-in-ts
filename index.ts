@@ -1,21 +1,42 @@
+// Loading
 console.log("Loading...")
 
+// Import packages
 import dotenv from "dotenv"
 dotenv.config()
 import { TwitterApi } from "twitter-api-v2"
 import inquirer from "inquirer"
 import Table from "cli-table"
 import moment from "moment"
+import fs from "fs"
 
+// API Keys
 const appKey = process.env.API_KEY
 const appSecret = process.env.API_KEY_SECRET
 const accessToken = process.env.ACCESS_TOKEN
 const accessSecret = process.env.ACCESS_TOKEN_SECRET
 
+// Twitter API V2 Client Init
 const twitterClient = new TwitterApi({ appKey, appSecret, accessSecret, accessToken })
 
 const client = twitterClient.readWrite;
 
+// Logging
+if (fs.existsSync("./logs/tweetLog.txt") === true) {
+    
+} else if (fs.existsSync("./logs/tweetLog.txt") === false) {
+    console.log("Tweet Log File Doesn't Exist. Creating log file...")
+    fs.mkdirSync("./logs")
+    fs.writeFileSync("./logs/tweetLog.txt", `${moment().format("DD-MM-YYYY hh:mm:ss a")}: Tweet Log File Created`)
+}
+
+const fsLogger = fs.createWriteStream("./logs/tweetLog.txt", {
+    flags: "a"
+})
+
+const logger = (line:string) => fsLogger.write(`\n${line}`)
+
+// Main function/program
 async function main() {
     console.clear()
 
@@ -48,10 +69,11 @@ async function main() {
                         });
 
                         table.push(
-                            [moment().format("DD-MM-YYYY hh:mm:ssa"), tweet.data.text]
+                            [moment().format("DD-MM-YYYY hh:mm:ss a"), tweet.data.text]
                         );
 
                         console.log(table.toString());
+                        logger(`${moment().format("DD-MM-YYYY hh:mm:ss a")}: A Tweet has been created. Tweet Content: ${tweetMsg} (ID: ${tweet.data.id})`)
                     })
                     .catch(err => console.error(err))
             })
@@ -79,10 +101,11 @@ async function main() {
                             });
     
                             table.push(
-                                [moment().format("DD-MM-YYYY hh:mm:ssa"), tweet.data.text]
+                                [moment().format("DD-MM-YYYY hh:mm:ss a"), tweet.data.text]
                             );
     
                             console.log(table.toString());
+                            logger(`${moment().format("DD-MM-YYYY hh:mm:ss a")}: A reply has been created. Reply Content: ${answers.replyMsg} (ID: ${tweet.data.id})`)
                         })
                         .catch(err => console.error(err))
                 })
