@@ -1,6 +1,8 @@
 # tweeter-in-ts
 The way better version of "Tweeter" and it is written in Typescript
 
+**MAKE AN ISSUE IF THERE IS ANY PROBLEM WITH THE CODE**
+
 Compile `index.ts`
 
 The `tsconfig.json` is already there so you just need to create a `dist` folder then run `tsc`
