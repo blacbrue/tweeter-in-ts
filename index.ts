@@ -36,15 +36,15 @@ const fsLogger = fs.createWriteStream("./logs/tweetLog.txt", {
 
 const logger = (line:string) => fsLogger.write(`\n${line}`)
 
-// Main function/program
+// Main function/program    
 async function main() {
     console.clear()
 
     await inquirer.prompt({
         name: "tweetOrReply",
         type: "list",
-        message: "Do you want to tweet or reply? (no media)",
-        choices: ["Tweet", "Reply", "Exit"]
+        message: "Choose something (Tweet and reply with no media)",
+        choices: ["Tweet", "Reply", "Like a Tweet/Reply", "Unlike a Tweet/Reply", "Retweet a tweet", "Unretweet a tweet", "Delete a tweet", "Exit"]
     }).then(async answers => {
         const choice = answers.tweetOrReply
 
@@ -105,10 +105,144 @@ async function main() {
                             );
     
                             console.log(table.toString());
-                            logger(`${moment().format("DD-MM-YYYY hh:mm:ss a")}: A reply has been created. Reply Content: ${answers.replyMsg} (ID: ${tweet.data.id})`)
+                            logger(`${moment().format("DD-MM-YYYY hh:mm:ss a")}: You replied to someone. Reply Content: ${answers.replyMsg} (ID: ${tweet.data.id})`)
                         })
                         .catch(err => console.error(err))
                 })
+            })
+        } else if (choice === "Like a Tweet/Reply") {
+            await inquirer.prompt({
+                name: "tweetID",
+                type: "input",
+                message: "Tweet ID:"
+            }).then(async answers => {
+                if (answers.tweetID === "") {
+                    return console.log("You need to provide a Tweet ID")
+                }
+
+                await client.v2.like((await client.currentUserV2()).data.id, answers.tweetID)
+                    .then(async tweet => {
+                        const fetchTweet = client.v2.singleTweet(answers.tweetID)
+
+                        console.log(`\nYou liked a tweet`)
+                        
+                        const table = new Table({
+                            head: ['Time', 'Tweet Content']
+                        });
+
+                        table.push(
+                            [moment().format("DD-MM-YYYY hh:mm:ss a"), (await fetchTweet).data.text]
+                        );
+
+                        console.log(table.toString());
+                        logger(`${moment().format("DD-MM-YYYY hh:mm:ss a")}: You liked a tweet. Tweet Content: ${(await fetchTweet).data.text} (ID: ${(await fetchTweet).data.id})`)
+                    })
+                    .catch(err => console.error(err))
+            })
+        } else if (choice === "Unlike a Tweet/Reply") {
+            await inquirer.prompt({
+                name: "tweetID",
+                type: "input",
+                message: "Tweet ID:"
+            }).then(async answers => {
+                if (answers.tweetID === "") {
+                    return console.log("Error: You need to provide a Tweet ID")
+                }
+
+                await client.v2.unlike((await client.currentUserV2()).data.id, answers.tweetID)
+                    .then(async tweet => {
+                        const fetchTweet = client.v2.singleTweet(answers.tweetID)
+
+                        console.log(`\nYou unliked a tweet`)
+                        
+                        const table = new Table({
+                            head: ['Time', 'Tweet Content']
+                        });
+
+                        table.push(
+                            [moment().format("DD-MM-YYYY hh:mm:ss a"), (await fetchTweet).data.text]
+                        );
+
+                        console.log(table.toString());
+                        logger(`${moment().format("DD-MM-YYYY hh:mm:ss a")}: You unliked a tweet. Tweet Content: ${(await fetchTweet).data.text} (ID: ${(await fetchTweet).data.id})`)
+                    })
+                    .catch(err => console.error(err))
+            })
+        } else if (choice === "Retweet a tweet") {
+            await inquirer.prompt({
+                name: "tweetID",
+                type: "input",
+                message: "Tweet ID:"
+            }).then(async answers => {
+                if (answers.tweetID === "") {
+                    return console.log("Error: You need to provide a Tweet ID")
+                }
+
+                await client.v2.retweet((await client.currentUserV2()).data.id, answers.tweetID)
+                    .then(async tweet => {
+                        const fetchTweet = client.v2.singleTweet(answers.tweetID)
+
+                        console.log(`\nYou retweeted a tweet`)
+                        
+                        const table = new Table({
+                            head: ['Time', 'Tweet Content']
+                        });
+
+                        table.push(
+                            [moment().format("DD-MM-YYYY hh:mm:ss a"), (await fetchTweet).data.text]
+                        );
+
+                        console.log(table.toString());
+                        logger(`${moment().format("DD-MM-YYYY hh:mm:ss a")}: You retweeted a tweet. Tweet Content: ${(await fetchTweet).data.text} (ID: ${(await fetchTweet).data.id})`)
+                    })
+                    .catch(err => console.error(err))
+            })
+        } else if (choice === "Unretweet a tweet") {
+            await inquirer.prompt({
+                name: "tweetID",
+                type: "input",
+                message: "Tweet ID:"
+            }).then(async answers => {
+                if (answers.tweetID === "") {
+                    return console.log("Error: You need to provide a Tweet ID")
+                }
+
+                await client.v2.unretweet((await client.currentUserV2()).data.id, answers.tweetID)
+                    .then(async tweet => {
+                        const fetchTweet = client.v2.singleTweet(answers.tweetID)
+
+                        console.log(`\nYou unretweeted a tweet`)
+                        
+                        const table = new Table({
+                            head: ['Time', 'Tweet Content']
+                        });
+
+                        table.push(
+                            [moment().format("DD-MM-YYYY hh:mm:ss a"), (await fetchTweet).data.text]
+                        );
+
+                        console.log(table.toString());
+                        logger(`${moment().format("DD-MM-YYYY hh:mm:ss a")}: You unretweeted a tweet. Tweet Content: ${(await fetchTweet).data.text} (ID: ${(await fetchTweet).data.id})`)
+                    })
+                    .catch(err => console.error(err))
+            })
+        } else if (choice === "Delete a tweet") {
+            await inquirer.prompt({
+                name: "tweetID",
+                type: "input",
+                message: "Tweet ID (Tweet that you've made):"
+            }).then(async answers => {
+                if (answers.tweetID === "") {
+                    return console.log("Error: You need to provide a Tweet ID")
+                }
+
+                await client.v2.deleteTweet(answers.tweetID)
+                    .then(async tweet => {
+                        console.log(`\nYou deleted a tweet`)
+                        
+                        logger(`${moment().format("DD-MM-YYYY hh:mm:ss a")}: You deleted a tweet.`)
+                    })
+                    .catch(err => console.error(err))
             })
         } else if (choice === "Exit") {
             process.exit(0)
