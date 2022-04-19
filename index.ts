@@ -44,7 +44,7 @@ async function main() {
         name: "tweetOrReply",
         type: "list",
         message: "Choose something (Tweet and reply with no media)",
-        choices: ["Tweet", "Reply", "Like a Tweet/Reply", "Unlike a Tweet/Reply", "Retweet a tweet", "Unretweet a tweet", "Delete a tweet", "Exit"]
+        choices: ["Tweet", "Reply", "Like a Tweet/Reply", "Unlike a Tweet/Reply", "Retweet a tweet", "Unretweet a tweet", "Delete a tweet", "Show Tweet Log", "Exit"]
     }).then(async answers => {
         const choice = answers.tweetOrReply
 
@@ -244,6 +244,17 @@ async function main() {
                     })
                     .catch(err => console.error(err))
             })
+        } else if (choice === "Show Tweet Log") {
+            try {
+                fs.readFile("./logs/tweetLog.txt", "utf8", async (err, data) => {
+                    if (err) throw err;
+
+                    console.log(`\nTweet Log for ${(await client.currentUserV2()).data.name}:`)
+                    console.log(data)
+                })
+            } catch (error) {
+                
+            }
         } else if (choice === "Exit") {
             process.exit(0)
         }
