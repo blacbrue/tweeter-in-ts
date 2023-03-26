@@ -1,5 +1,5 @@
 # tweeter-in-ts
-The way better version of "Tweeter" and it is written in Typescript
+The way better version of "[Tweeter](https://github.com/blacbrue/tweeter)" and it is written in Typescript
 
 **MAKE AN ISSUE IF THERE IS ANY PROBLEM WITH THE CODE**
 
